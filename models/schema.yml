@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: stg_milk_collections
+    columns:
+      - name: collection_id
+        tests: [unique, not_null]
+  - name: stg_factory_intake
+    columns:
+      - name: intake_id
+        tests: [unique, not_null]
+      - name: qa_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["ACCEPTED", "REJECTED"]
+  - name: stg_production_batches
+    columns:
+      - name: batch_id
+        tests: [unique, not_null]
+  - name: stg_batch_inputs
+    columns:
+      - name: intake_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_factory_intake')
+                field: intake_id
+  - name: stg_dispatches
+    columns:
+      - name: dispatch_id
+        tests: [unique, not_null]
+      - name: batch_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_production_batches')
+                field: batch_id
+  - name: fct_batch_yield
+    description: Batch-level yield conversion, waste and variance against standard.
+    columns:
+      - name: batch_id
+        tests: [unique, not_null]
+  - name: fct_lot_traceability
+    description: Dispatch -> batch -> tanker -> collection centre -> farmer-day genealogy.
+  - name: mart_centre_performance
+    description: Collection centre scorecard.
+  - name: mart_line_yield_summary
+    description: Monthly yield and waste by product line.
