@@ -1,0 +1,7 @@
+dairy_traceability:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: dairy.duckdb
+      threads: 4
